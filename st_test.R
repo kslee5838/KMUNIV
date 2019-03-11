@@ -1,6 +1,7 @@
   
   # st_test (Stationary Test)
-  library(zoo);library(dplyr);library(ggplot2);library(urca)
+  library(zoo);library(dplyr);library(ggplot2);library(urca) ;library(psych)
+  
   PPPData_edit2_raw <- read.csv("~/KMUNIV/PPPData_edit2_raw.csv")
   kmu1<-log(PPPData_edit2_raw[,-c(1:2,19,21)]) # PPPData 로그값  
 
@@ -18,6 +19,7 @@
   }
   
   index1<-seq(as.Date("2010-01-01"),as.Date("2018-09-01"),by="month") # 2010-01-01부터 2018-09-01  
+  index2<-seq(as.Date("2009-12-01"),as.Date("2018-09-01"),by="month") # 2009-12-01부터 2018-09-01
   kmu2<-zoo(kmu1,index1)
   par(mfrow=c(1,2))
   plot(kmu2$kg_z31,col=c("blue"),lwd=2)
@@ -165,10 +167,10 @@
    
   kmu7<-cbind(kmu3,kmu4,kmu5,kmu6)
   
-  kmu8<-log(kmu3)*100
-  kmu9<-log(kmu4)*100
-  kmu10<-log(kmu5)*100
-  kmu11<-log(kmu6)*100
+  kmu8<-log(kmu3)*100%>%zoo(index2)
+  kmu9<-log(kmu4)*100%>%zoo(index2)
+  kmu10<-log(kmu5)*100%>%zoo(index2)
+  kmu11<-log(kmu6)*100%>%zoo(index2)
   
   
   ur.df(kmu8[,1],type="none",lags=1)
@@ -178,29 +180,68 @@
   plot(diff(kmu8[,1]),col=c("green"),lwd=2)
   
   #### kmu8(15개), kmu9(16개) kmu10(19개), kmu11(20개) 에서 -INF 가각 제거후 ur.df 각각 실행 ############## 
-  
-            rows<-length(kmu11[,1])
-            cols<-length(kmu11[1,])
+  #
+            rows<-length(kmu8[,1])
+            cols<-length(kmu8[1,])
             for ( i in 1:rows){
-            for ( j in 1:cols){
-                if(kmu11[i,j]=="-Inf"){
-                  kmu11[i,j]=c(0)
+              for ( j in 1:cols){
+                if(kmu8[i,j]=="-Inf"){
+                  kmu8[i,j]=c(0)
                 }
               }
             }
   
+  rows<-length(kmu9[,1])
+  cols<-length(kmu9[1,])
+  for ( i in 1:rows){
+    for ( j in 1:cols){
+      if(kmu9[i,j]=="-Inf"){
+        kmu9[i,j]=c(0)
+                }
+          }
+  }
+            
   
-            for (i in 1:20){                            # ur.df(원자료) i으ㅏ 갯수 15개, 16개, 19개,20개 가각체크  
+          
+  
+  
+  
+  
+  
+    for (i in 1:20){                            # ur.df(원자료) i의 갯수 15개, 16개, 19개,20개 각각체크  
               vi<-ur.df(kmu11[,i],type="none",lags=1)
               print(vi@teststat)
               print(vi@cval[1])
             }  
             
-            for (i in 1:20){                            # ur.df테스트 (diff 자료로 변환 )   
+            for (i in 1:20){                    # ur.df테스트 (diff 자료로 변환 )   
               vii<-ur.df(diff(kmu11[,i]),type="none",lags=1)
               print(vii@teststat)
               print(vii@cval[1])
             }
-  
+  #
   #######여기까지 #################################################
-ffff
+  
+  #### fa.pararell
+  #### factanal
+  #### fa
+
+   par(mfrow=c(1,1))
+   prcomp(diff(kmu8))%>%plot()
+   factanal(diff(kmu8), 2,rotation="varimax",scores="regression") # 또는 rotation="promax"
+   
+   fa.parallel(diff(kmu8), fm = 'minres', fa = 'fa')              # fm=
+   fa.parallel(diff(kmu8), fm = 'minres', fa = 'pc')              # fa='fa'또는 'pc'
+   fa.parallel(diff(kmu8), fm = 'ml', fa = 'fa')
+   fa.parallel(diff(kmu8), fm = 'ml', fa = 'pc') 
+   fa(diff(kmu8),nfactors = 3,rotate = "oblimin",fm="minres") 
+     
+   factanal(diff(kmu9), 7,rotation="varimax",scores="regression")
+   acf(diff(kmu8),lag.max =NULL,type=c("correlation"),plot=F,na.action=na.pass)
+
+   kmu12<-diff(kmu8[,1])  # tryACF 탭의 오브젝트오 이용  
+
+   kmu13<-diff(kmu8)
+   kmu14<-diff(kmu9)
+   kmu15<-diff(kmu10)
+   kmu16<-diff(kmu11)
