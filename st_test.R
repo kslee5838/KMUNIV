@@ -181,12 +181,12 @@
   
   #### kmu8(15개), kmu9(16개) kmu10(19개), kmu11(20개) 에서 -INF 가각 제거후 ur.df 각각 실행 ############## 
   #
-            rows<-length(kmu8[,1])
-            cols<-length(kmu8[1,])
+            rows<-length(kmu10[,1])
+            cols<-length(kmu10[1,])
             for ( i in 1:rows){
               for ( j in 1:cols){
-                if(kmu8[i,j]=="-Inf"){
-                  kmu8[i,j]=c(0)
+                if(kmu10[i,j]=="-Inf"){
+                  kmu10[i,j]=c(0)
                 }
               }
             }
@@ -201,47 +201,81 @@
           }
   }
             
-  
-          
-  
+
   
   
   
-  
-    for (i in 1:20){                            # ur.df(원자료) i의 갯수 15개, 16개, 19개,20개 각각체크  
-              vi<-ur.df(kmu11[,i],type="none",lags=1)
+    for (i in 1:19){                            # ur.df(원자료) i의 갯수 15개, 16개, 19개,20개 각각체크  
+              vi<-ur.df(kmu10[,i],type="none",lags=1)
               print(vi@teststat)
               print(vi@cval[1])
             }  
-            
-            for (i in 1:20){                    # ur.df테스트 (diff 자료로 변환 )   
-              vii<-ur.df(diff(kmu11[,i]),type="none",lags=1)
+ print("pause")           
+            for (i in 1:19){                    # ur.df테스트 (diff 자료로 변환 )   
+              vii<-ur.df(diff(kmu10[,i]),type="none",lags=3)
               print(vii@teststat)
               print(vii@cval[1])
             }
   #
   #######여기까지 #################################################
   
+ 
+ kmu13<-diff(kmu8)
+ kmu14<-diff(kmu9)
+ kmu15<-diff(kmu10)
+ kmu16<-diff(kmu11)
+ 
+ colnames(kmu8)<-c("z1","z2","z3",'z4','z5','z6','z7','z8','z9','z10','z11','z12','z13','z14','z15')
+ colnames(kmu9)<-c("z21","z22","z23",'z24','z25','z26','z27','z28','z29','z30','z31','z32','z33','z34','z35','z36')
+ colnames(kmu10)<-c("z41","z42","z43",'z44','z45','z46','z47','z48','z49','z50','z51','z52','z53','z54','z55',
+                    'z56','z57','z58','z59')
+ colnames(kmu11)<-c("z61","z62","z63",'z64','z65','z66','z67','z68','z69','z70','z71','z72','z73','z74',
+                    'z75','z76','z77','z78','z79','z80')
+ 
   #### fa.pararell
   #### factanal
   #### fa
 
    par(mfrow=c(1,1))
    prcomp(diff(kmu8))%>%plot()
-   factanal(diff(kmu8), 2,rotation="varimax",scores="regression") # 또는 rotation="promax"
-   
-   fa.parallel(diff(kmu8), fm = 'minres', fa = 'fa')              # fm=
-   fa.parallel(diff(kmu8), fm = 'minres', fa = 'pc')              # fa='fa'또는 'pc'
-   fa.parallel(diff(kmu8), fm = 'ml', fa = 'fa')
-   fa.parallel(diff(kmu8), fm = 'ml', fa = 'pc') 
+   factanal(diff(kmu8), 7,rotation="varimax",scores="regression") # 또는 rotation="promax"
+   fa.parallel(diff(kmu9), fm = 'minres', fa = 'fa')              # Factoring method fm="minres" will do a minimum residual as will fm="uls"
+   fa.parallel(diff(kmu9), fm = 'minres', fa = 'pc')              # fa='fa'또는 'pc'
+   fa.parallel(diff(kmu11), fm = 'ml', fa = 'fa')                 # fm="ml" a maximum likelihood factor analysis
+   fa.parallel(diff(kmu9), fm = 'ml', fa = 'pc')      # diff(kmu8) 7 factors, 4 factors,5 factors,4 factors
    fa(diff(kmu8),nfactors = 3,rotate = "oblimin",fm="minres") 
      
    factanal(diff(kmu9), 7,rotation="varimax",scores="regression")
    acf(diff(kmu8),lag.max =NULL,type=c("correlation"),plot=F,na.action=na.pass)
 
-   kmu12<-diff(kmu8[,1])  # tryACF 탭의 오브젝트오 이용  
+   kmu12<-diff(kmu8[,1])  # tryACF 탭의 오브젝트로 이용되고 있음.    
 
-   kmu13<-diff(kmu8)
-   kmu14<-diff(kmu9)
-   kmu15<-diff(kmu10)
-   kmu16<-diff(kmu11)
+   kmu17<-factanal(diff(kmu8), 7,rotation="varimax",scores="regression")
+   kmu18<-factanal(diff(kmu9), 4,rotation="varimax",scores="regression")
+   kmu19<-factanal(diff(kmu10), 5,rotation="varimax",scores="regression")
+   kmu20<-factanal(diff(kmu9), 4,rotation="varimax",scores="regression")
+
+   kmu17_Factor1<-kmu17$scores[,"Factor1"]
+   kmu17_Factor2<-kmu17$scores[,"Factor2"] 
+   kmu17_Factor3<-kmu17$scores[,"Factor3"]
+   kmu17_Factor4<-kmu17$scores[,"Factor4"]
+   kmu17_Factor5<-kmu17$scores[,"Factor5"]
+   kmu17_Factor6<-kmu17$scores[,"Factor6"]
+   kmu17_Factor7<-kmu17$scores[,"Factor7"]
+   
+   kmu18_Factor1<-kmu18$scores[,"Factor1"]
+   kmu18_Factor2<-kmu18$scores[,"Factor2"] 
+   kmu18_Factor3<-kmu18$scores[,"Factor3"]
+   kmu18_Factor4<-kmu18$scores[,"Factor4"]
+   
+   kmu19_Factor1<-kmu19$scores[,"Factor1"]
+   kmu19_Factor2<-kmu19$scores[,"Factor2"] 
+   kmu19_Factor3<-kmu19$scores[,"Factor3"]
+   kmu19_Factor4<-kmu19$scores[,"Factor4"]
+   kmu19_Factor5<-kmu19$scores[,"Factor5"]
+   
+   kmu20_Factor1<-kmu20$scores[,"Factor1"]
+   kmu20_Factor2<-kmu20$scores[,"Factor2"] 
+   kmu20_Factor3<-kmu20$scores[,"Factor3"]
+   kmu20_Factor4<-kmu20$scores[,"Factor4"]
+  
