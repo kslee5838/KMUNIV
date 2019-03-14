@@ -181,12 +181,12 @@
   
   #### kmu8(15개), kmu9(16개) kmu10(19개), kmu11(20개) 에서 -INF 가각 제거후 ur.df 각각 실행 ############## 
   #
-            rows<-length(kmu10[,1])
-            cols<-length(kmu10[1,])
+            rows<-length(kmu8[,1])
+            cols<-length(kmu8[1,])
             for ( i in 1:rows){
               for ( j in 1:cols){
-                if(kmu10[i,j]=="-Inf"){
-                  kmu10[i,j]=c(0)
+                if(kmu8[i,j]=="-Inf"){
+                  kmu8[i,j]=c(0)
                 }
               }
             }
@@ -201,8 +201,25 @@
           }
   }
             
-
-  
+                rows<-length(kmu10[,1])
+                cols<-length(kmu10[1,])
+                for ( i in 1:rows){
+                  for ( j in 1:cols){
+                    if(kmu10[i,j]=="-Inf"){
+                      kmu10[i,j]=c(0)
+                    }
+                  }
+                }
+                
+    rows<-length(kmu11[,1])
+    cols<-length(kmu11[1,])
+          for ( i in 1:rows){
+            for ( j in 1:cols){
+              if(kmu11[i,j]=="-Inf"){
+                 kmu11[i,j]=c(0)
+                    }
+                  }
+                }
   
   
     for (i in 1:19){                            # ur.df(원자료) i의 갯수 15개, 16개, 19개,20개 각각체크  
@@ -278,4 +295,9 @@
    kmu20_Factor2<-kmu20$scores[,"Factor2"] 
    kmu20_Factor3<-kmu20$scores[,"Factor3"]
    kmu20_Factor4<-kmu20$scores[,"Factor4"]
-  
+   
+   kmu21<-append(PPPData_edit2_raw$CPI_KOR, 89.269, after=0)%>%zoo(index2)
+   kmu22<-append(PPPData_edit2_raw$CPI_USA, 215.949, after=0)%>%zoo(index2)
+   P_T
+   P_T_STAR
+   S_T
