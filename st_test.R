@@ -296,8 +296,36 @@
    kmu20_Factor3<-kmu20$scores[,"Factor3"]
    kmu20_Factor4<-kmu20$scores[,"Factor4"]
    
-   kmu21<-append(PPPData_edit2_raw$CPI_KOR, 89.269, after=0)%>%zoo(index2)
-   kmu22<-append(PPPData_edit2_raw$CPI_USA, 215.949, after=0)%>%zoo(index2)
-   P_T
-   P_T_STAR
-   S_T
+   kmu21<-append(PPPData_edit2_raw$CPI_KOR, 89.269, after=0)%>%zoo(index2)  # ur.df 테스트 위해서 전월 수치 필요함    
+   kmu22<-append(PPPData_edit2_raw$CPI_USA, 215.949, after=0)%>%zoo(index2) # 상 동   
+   kmu23<-append(PPPData_edit2_raw$DEXKOUS, 1162.5, after=0)%>%zoo(index2) 
+    
+    for (i in 1:2){                    # ur.df테스트 (diff 자료로 변환 )->그런데 
+                                       # log(diff) 는 음수가 생성되어   
+                                       # 계산 할수 없음. 안타 까움    
+      vii<-ur.df(diff(kmu21[,i]),type="none",lags=3)
+      print(vii@teststat)
+      print(vii@cval[1])
+    }
+   
+    for (i in 1:2){                    # ur.df테스트 (diff 자료로 변환 )-> 안타 까움     
+      vii<-ur.df(diff(kmu22[,i]),type="none",lags=3)
+      print(vii@teststat)
+      print(vii@cval[1])
+    }
+   
+   P_T <-log(kmu21)*100                # 소비자물가지수 한국, log(diff(kmu21))*100 (음수여서 X)       
+   P_T_STAR<-log(kmu22)*100            # 소비자물가지수 미국  
+   S_T<-log(kmu23)*100                 # 환율  
+   Y_T<-PPPData_edit2_raw$Y            # change(환율) 즉 환율에 대한 log값의 diff 
+   
+   ### S_T 도 12월 자료 필요해요 -> diff도 "minus, -" 값 -> diff 할수없음
+   S_T<-log(kmu23[-1,])*100  # S_T redefined
+   
+   for (i in 1:2){                     # ur.df테스트      
+         vii<-ur.df(diff(kmu23[,i]),type="none",lags=3)
+         print(vii@teststat)
+         print(vii@cval[1])
+     }
+  
+   ########## diff(log) 인지 log(diff) 인지?? 후자인 경우 음수가 발생하여 diff 할 수 없음   
