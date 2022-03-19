@@ -1,1 +1,2 @@
 Hi, this is my first Jekyll site
+Add sentence got storyteller directory
